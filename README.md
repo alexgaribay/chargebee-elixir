@@ -1,11 +1,10 @@
 
 # Chargebee
 
-**TODO: Add description**
+An Elixir library to interface with the Chargebee API.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
 
   1. Add `chargebee` to your list of dependencies in `mix.exs`:
 
@@ -15,10 +14,13 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
     end
     ```
 
-  2. Ensure `chargebee` is started before your application:
+## Configuration
 
-    ```elixir
-    def application do
-      [applications: [:chargebee]]
-    end
-    ```
+Update your config file to include Chargebee to include your API key and site name.
+For example, if your site is `awesome-app.chargebee.com` your site would be `awesome-app`.
+
+```
+config :chargebee,
+  api_key: "YOUR_API_KEY",
+  site: "awesome-app"
+```
