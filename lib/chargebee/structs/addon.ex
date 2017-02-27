@@ -20,7 +20,11 @@ defmodule Chargebee.Addon do
               :tax_code,
               :invoice_notes,
               :taxable,
-              :meta_data
+              :meta_data,
+
+              # Specific fields for Subscription Addon
+              :quantity,
+              :unit_price
             ]
 
   def create(addon) do
