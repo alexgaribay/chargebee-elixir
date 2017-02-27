@@ -26,10 +26,18 @@ defmodule Chargebee.Request do
   end
 
   def handle_response({:ok, %{body: json, status_code: 200}}) do
+    decoded_json = Poison.decode!(json, keys: :atoms)
+
     output =
-      Poison.decode!(json, keys: :atoms)
-      |> Enum.map(fn {key,val} -> parse_body(key, val) end)
-      |> Map.new
+      case Chargebee.Config.convert_to_struct? do
+        :true ->
+          decoded_json
+          |> Enum.map(fn {key,val} -> parse_body(key, val) end)
+          |> Map.new
+        _ ->
+          decoded_json
+      end
+
 
     {:ok, extract_single(output)}
   end
@@ -39,13 +47,20 @@ defmodule Chargebee.Request do
   end
 
   def handle_list_response({:ok, %{body: json, status_code: 200}}) do
-    output = Poison.decode!(json, keys: :atoms)
-    obj_list =
-      Enum.map(output[:list], &(Enum.map(&1, fn {key,val} -> parse_body(key, val) end)))
-      |> Enum.map(&(Map.new(&1)))
-      |> Enum.map(&extract_single(&1))
+    output =
+      Poison.decode!(json, keys: :atoms)
 
-    {:ok, (obj_list), output["next_offset"]}
+    obj_list =
+      case Chargebee.Config.convert_to_struct? do
+        :true ->
+          Enum.map(output[:list], &(Enum.map(&1, fn {key,val} -> parse_body(key, val) end)))
+          |> Enum.map(&(Map.new(&1)))
+          |> Enum.map(&extract_single(&1))
+        _ ->
+          Enum.map(output[:list], &extract_single(&1))
+      end
+
+    {:ok, (obj_list), output[:next_offset]}
   end
 
   def handle_list_response({_, non_200_response}) do

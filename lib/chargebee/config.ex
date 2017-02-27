@@ -11,6 +11,10 @@ defmodule Chargebee.Config do
     Application.get_env(:chargebee, :api_impl, Chargebee.Request)
   end
 
+  def convert_to_struct? do
+    Application.get_env(:chargebee, :convert_to_struct, :true)
+  end
+
   defp check_value(nil) do
     raise ArgumentError, message: "Invalid config value given"
   end
